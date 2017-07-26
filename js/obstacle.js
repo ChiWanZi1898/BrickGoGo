@@ -88,7 +88,7 @@ Obstacle = function (game, type, id) {
     case 3:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.wallAboveOrBeneath = 2;
+      this.wallAboveOrBeneath = 0;
       this.wallLow = true;
       this.wallPosition = -3;
       this.meshList.push(this.createBasicWall(this.wallAboveOrBeneath, this.wallLow, this.wallPosition));
@@ -105,7 +105,7 @@ Obstacle = function (game, type, id) {
     case 5:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.wallAboveOrBeneath = 2;
+      this.wallAboveOrBeneath = 0;
       this.wallLow = false;
       this.wallPosition = -3;
       this.meshList.push(this.createBasicWall(this.wallAboveOrBeneath, this.wallLow, this.wallPosition));
