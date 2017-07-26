@@ -151,6 +151,18 @@ Obstacle = function (game, type, id) {
       this.meshList.push(this.createBasicWall(0, true, -3));
       this.addAnimationJumpForth(this.meshList[1]);
       break;
+    case 11:
+      this.meshList.push(this.createBasicTrack());
+      this.addAnimation(this.meshList[0]);
+      this.meshList.push(this.createHeartTrigger(1));
+      this.addAnimationNormal(this.meshList[1]);
+      this.meshList.push(this.createBasicWall(0, true, -3));
+      this.addAnimationNormal(this.meshList[2]);
+      this.meshList.push(this.createBasicWall(1, false, 3));
+      this.addAnimationNormal(this.meshList[3]);
+      this.meshList.push(this.createBasicWall(1, false, -3));
+      this.addAnimationNormal(this.meshList[4]);
+      break;
     default:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
@@ -224,8 +236,12 @@ Obstacle.prototype.createBasicWall = function (aboveOrBeneath = 0, isLow = true,
   this.game.brick.mesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
     {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: mesh},
     function () {
-      console.info(_this.id);
-      _this.game.state = -2;
+      if(_this.game.isInvicible === false) {
+        console.info("CRASHED INTO WALL_" + _this.id);
+        _this.game.decreaseLives();
+        _this.game.isInvicible = true;
+        _this.game.brick.mesh.material.diffuseColor = new BABYLON.Color3(237 / 256, 181 / 256, 236 / 256);
+      }
     }));
 
   this.wall = mesh;
@@ -316,6 +332,50 @@ Obstacle.prototype.createSwapTrigger = function (aboveOrBeneath) {
     {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: mesh},
     function () {
       _this.game.brick.swap();
+    }));
+
+  return mesh;
+};
+
+
+/**
+ * create a heart, player can get one more life when hit on it.
+ * @param aboveOrBeneath
+ */
+Obstacle.prototype.createHeartTrigger = function (aboveOrBeneath) {
+
+  var mesh = BABYLON.Mesh.CreateBox("trigger_" + this.id, 1.0, this.scene);
+  mesh.scaling = new BABYLON.Vector3(this.triggerLength, this.triggerHeight, this.triggerWidth);
+
+  switch (aboveOrBeneath) {
+    case 0:
+      mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
+      break;
+    case 1:
+      mesh.position.y = -(this.triggerHeight / 2 + this.trackHeight / 2);
+      break;
+    case 2:
+      if (Math.random() > 0.5) {
+        mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
+      }
+      else {
+        mesh.position.y = -(this.triggerHeight / 2 + this.trackHeight / 2);
+      }
+      break;
+  }
+
+  mesh.position.x = this.positionX;
+
+  var materialBox = new BABYLON.StandardMaterial("trigger_texture_" + this.id, this.scene);
+  materialBox.diffuseColor = new BABYLON.Color3(240 / 256, 181 / 236, 240 / 256);
+  mesh.material = materialBox;
+  mesh.material.alpha = 0;
+
+  var _this = this;
+  this.game.brick.mesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(
+    {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: mesh},
+    function () {
+      _this.game.increaseLives();
     }));
 
   return mesh;

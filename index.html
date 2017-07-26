@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
     <title>BrickGoGo</title>
+    <script src="src/jquery-3.2.1.min.js"></script>
     <script src="src/babylon.js"></script>
     <script src="js/main.js"></script>
     <script src="js/game.js"></script>
@@ -14,14 +15,19 @@
     <link rel="stylesheet" type="text/css" href="css/game.css"/>
 </head>
 <body>
-  <div id="2D-text">
+<ul id="lives">
+    <li><img src="pictures/heart.png" ></li>
+    <li><img src="pictures/heart.png" ></li>
+    <li><img src="pictures/heart.png" ></li>
+</ul>
+<div id="text">
     <div>
         <p id="score"></p>
     </div>
-    <p id="welcome">Press Space</p>
+    <p id="welcome">Go! Brick! Go!</p>
     <p id="gameover">Valar Morghulis</p>
-  </div>
-  <canvas id="renderCanvas"></canvas>
+</div>
+<canvas id="renderCanvas"></canvas>
 </body>
 </html>
 

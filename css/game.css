@@ -22,7 +22,7 @@ p {
     font-size: 2em;
 }
 
-div {
+#text {
     position: absolute;
     top: 0;
     left: 0;
@@ -32,5 +32,26 @@ div {
 
 #gameover {
     visibility: hidden;
+}
+
+#lives {
+    position: absolute;
+    list-style: none;
+    display: inline-block;
+    z-index: 1;
+    padding: 0;
+    text-align: center;
+    visibility: hidden;
+}
+
+img {
+    margin-top: 6%;
+    padding: 0px;
+    width: 2%;
+}
+
+li {
+    display: inline;
+    text-align: center;
 }
 

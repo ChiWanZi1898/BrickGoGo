@@ -52,6 +52,15 @@ Game = function (scene, engine) {
   this.score = 0;
 
   /**
+   * the remain lives of the player.
+   * @type {number}
+   */
+  this.lives = 3;
+
+  this.isInvicible = false;
+  this.invicibleCountdown = 1000;
+
+  /**
    * manager the creation, the movement and the removal
    * of all the obstacles.
    * @type {ObstacleManager}
@@ -90,11 +99,32 @@ Game = function (scene, engine) {
      * rotate the camera
      */
     else if (_this.state === 0) {
-      _this.scene.activeCamera.alpha = (_this.scene.activeCamera.alpha + 0.002) % (2 * Math.PI);
+      _this.scene.activeCamera.alpha += 0.001;
+      if (_this.scene.activeCamera.alpha >= Math.PI * 2) {
+        _this.scene.activeCamera.alpha -= Math.PI * 2;
+      }
     }
 
     else if ( _this.state === 2) {
-      _this.scene.activeCamera.alpha = (_this.scene.activeCamera.alpha + 0.01) % (2 * Math.PI);
+      _this.scene.activeCamera.alpha += 0.01;
+      if (_this.scene.activeCamera.alpha >= Math.PI * 2) {
+        _this.scene.activeCamera.alpha -= Math.PI * 2;
+      }
+    }
+
+    else if (_this.state === 1) {
+      if (_this.isInvicible === true) {
+        _this.invicibleCountdown -= _this.engine.getDeltaTime();
+        if (_this.invicibleCountdown <= 0) {
+          _this.brick.mesh.material.diffuseColor = new BABYLON.Color3(243 / 256, 150 / 256, 0 / 256);
+          _this.isInvicible = false;
+          _this.invicibleCountdown = 1000;
+        }
+      }
+
+      if (_this.lives <= 0) {
+        _this.state = -2;
+      }
     }
 
   });
@@ -103,8 +133,64 @@ Game = function (scene, engine) {
     _this.handleEvent(event);
   }, false);
 
+  document.addEventListener('touchstart', function (event) {
+    _this.touchStartX = event.changedTouches[0].clientX;
+    _this.touchStartY = event.changedTouches[0].clientY;
+  }, false);
+
+  document.addEventListener('touchend', function (event) {
+    _this.touchEndHandler(event);
+  }, false);
+
   //this.createStartScene();
 
+};
+
+
+Game.prototype.constructor = Game;
+
+
+Game.prototype.touchEndHandler = function (event) {
+
+  if (this.state === 0) {
+    console.info(Math.abs(event.changedTouches[0].clientX - this.touchStartX),
+      Math.abs(event.changedTouches[0].clientY - this.touchStartY))
+    if (Math.abs(event.changedTouches[0].clientX - this.touchStartX) < 10
+        && Math.abs(event.changedTouches[0].clientY - this.touchStartY) < 10) {
+      this.state = -1;
+      }
+  }
+
+  else if (this.state === 1) {
+    if (event.changedTouches[0].clientY < this.touchStartY) {
+      if (this.brick.mesh.position.y > 4) {
+        this.brick.jump();
+      }
+      else {
+        this.brick.swap();
+      }
+    }
+    else if (event.changedTouches[0].clientY > this.touchStartY) {
+      if (this.brick.mesh.position.y > 4) {
+        this.brick.swap();
+      }
+      else {
+        this.brick.jump();
+      }
+    }
+  }
+
+  /**
+   * restart.
+   */
+  else if (this.state === 2) {
+    if (Math.abs(event.changedTouches[0].clientX - this.touchStartX) < 10
+      && Math.abs(event.changedTouches[0].clientY - this.touchStartY) < 10) {
+      this.removeGameScene();
+      this.createStartScene();
+      this.state = 0;
+    }
+  }
 };
 
 Game.prototype.handleEvent = function (event) {
@@ -147,9 +233,6 @@ Game.prototype.handleEvent = function (event) {
 };
 
 
-Game.prototype.constructor = Game;
-
-
 /**
  * create start(welcome) scene.
  */
@@ -170,11 +253,15 @@ Game.prototype.createStartScene = function () {
 Game.prototype.createGameScene = function () {
   this.state = 1;
   this.score = 0;
+  this.lives = 3;
+  this.isInvicible = false;
   this.obstacleManager.run();
   this.cloud = new Cloud(this);
   this.cloud_2 = new Cloud(this, 960, 0, 4, 10);
 
   document.getElementById("score").innerHTML = this.score;
+  $("img").attr("src", "pictures/heart.png");
+  $("img").css("visibility", "visible");
 
   this.sound.game_music.play(2.1);
 };
@@ -188,6 +275,8 @@ Game.prototype.createGameOverScene = function () {
   this.cloud_2.pause();
   this.obstacleManager.pauseAll();
   document.getElementById("gameover").style.visibility = "visible";
+
+  $("img").css("visibility", "hidden");
 
   this.sound.game_music.stop();
 };
@@ -272,4 +361,17 @@ Game.prototype.loadResources = function () {
       _this.createStartScene();
     }
   }
+};
+
+
+Game.prototype.increaseLives = function () {
+  if(this.lives < 3)
+    this.lives++;
+  $("img:eq("+ this.lives +")").attr("src", "pictures/heart.png");
+};
+
+
+Game.prototype.decreaseLives = function () {
+  $("img:eq("+ this.lives +")").attr("src", "pictures/heart_grey.png");
+  this.lives--;
 };
