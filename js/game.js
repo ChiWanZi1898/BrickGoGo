@@ -14,6 +14,8 @@ Game = function (scene, engine) {
 
   this.engine = engine;
 
+  engine.loadingUIBackgroundColor = "#39d3d1";
+
   /**
    * the speed of all animation in this game
    * @type {number}
@@ -56,6 +58,12 @@ Game = function (scene, engine) {
    */
   this.obstacleManager = new ObstacleManager(this);
 
+  this.sound = new Sound(this);
+
+  this.assetsManager = new BABYLON.AssetsManager(this.scene);
+  this.loadResources();
+  this.assetsManager.load();
+
   var _this = this;
   this.scene.registerBeforeRender(function () {
 
@@ -77,13 +85,25 @@ Game = function (scene, engine) {
 
       _this.state = 2;
     }
+
+    /**
+     * rotate the camera
+     */
+    else if (_this.state === 0) {
+      _this.scene.activeCamera.alpha = (_this.scene.activeCamera.alpha + 0.002) % (2 * Math.PI);
+    }
+
+    else if ( _this.state === 2) {
+      _this.scene.activeCamera.alpha = (_this.scene.activeCamera.alpha + 0.01) % (2 * Math.PI);
+    }
+
   });
 
   document.addEventListener('keydown', function (event) {
     _this.handleEvent(event);
   }, false);
 
-  this.createStartScene();
+  //this.createStartScene();
 
 };
 
@@ -138,6 +158,9 @@ Game.prototype.createStartScene = function () {
   this.brick = new Brick(this);
   this.state = 0;
   document.getElementById("welcome").style.visibility = "visible";
+
+  this.sound.start_music.play();
+  this.sound.start_music.setVolume(1);
 };
 
 
@@ -151,7 +174,9 @@ Game.prototype.createGameScene = function () {
   this.cloud = new Cloud(this);
   this.cloud_2 = new Cloud(this, 960, 0, 4, 10);
 
-  document.getElementById("score").innerHTML = "SCORE: " + this.score;
+  document.getElementById("score").innerHTML = this.score;
+
+  this.sound.game_music.play(2.1);
 };
 
 
@@ -163,6 +188,8 @@ Game.prototype.createGameOverScene = function () {
   this.cloud_2.pause();
   this.obstacleManager.pauseAll();
   document.getElementById("gameover").style.visibility = "visible";
+
+  this.sound.game_music.stop();
 };
 
 
@@ -171,6 +198,9 @@ Game.prototype.createGameOverScene = function () {
  */
 Game.prototype.removeStartScene = function () {
   document.getElementById("welcome").style.visibility = "hidden";
+
+  this.sound.start_music.setVolume(0, 2);
+  this.sound.start_music.stop(2.1);
 };
 
 
@@ -187,6 +217,8 @@ Game.prototype.removeGameScene = function () {
   this.brick.remove();
   document.getElementById("gameover").style.visibility = "hidden";
   document.getElementById("score").innerHTML = "";
+
+
 };
 
 
@@ -204,7 +236,40 @@ Game.prototype.gameStartAnimation = function(){
   keys.push({frame: 0, value: 4});
   keys.push({frame: 120, value: 50});
   animation.setKeys(keys);
-  console.info("move like jager")
-  this.scene.beginDirectAnimation(this.scene, [animation], 0, 120, false, 4);
-  console.info("move like jager")
+
+  var animationAlpha = new BABYLON.Animation("animation",
+    "activeCamera.alpha",
+    30,
+    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+    BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
+  var keysAlpha = [];
+  keysAlpha.push({frame: 0, value: this.scene.activeCamera.alpha});
+  keysAlpha.push({frame: 120, value: 1});
+  animationAlpha.setKeys(keysAlpha);
+
+  this.scene.beginDirectAnimation(this.scene, [animation, animationAlpha], 0, 120, false, 4);
+};
+
+
+/**
+ * load all the resources such as music.
+ */
+Game.prototype.loadResources = function () {
+  var _this = this;
+  var binaryTask = this.assetsManager.addBinaryFileTask("start_music task", "sounds/start_music.mp3");
+  binaryTask.onSuccess = function (task) {
+    _this.sound.start_music = new BABYLON.Sound("start_music", task.data, _this.scene, soundReady, { loop: true });
+  };
+  var binaryTask2 = this.assetsManager.addBinaryFileTask("game_music task", "sounds/game_music.mp3");
+  binaryTask2.onSuccess = function (task) {
+    _this.sound.game_music = new BABYLON.Sound("game_music", task.data, _this.scene, soundReady, { loop: true });
+  };
+
+  var readied = 0;
+  function soundReady() {
+    readied++;
+    if(readied === 2) {
+      _this.createStartScene();
+    }
+  }
 };

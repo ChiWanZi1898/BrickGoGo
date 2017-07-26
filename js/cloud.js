@@ -94,7 +94,7 @@ Cloud.prototype.generateSubCloud = function () {
   keysA.push({frame: this.duration, value: 0});
   animationA.setKeys(keysA);
 
-  let anima = this.scene.beginDirectAnimation(mesh, [animationP, animationA], 0, this.duration, true, 4);
+  var anima = this.scene.beginDirectAnimation(mesh, [animationP, animationA], 0, this.duration, true, 4);
   this.animationList.push(anima);
 
 

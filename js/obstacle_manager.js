@@ -60,7 +60,7 @@ ObstacleManager = function (game) {
         if (_this.obstacleList[i].meshList[0].position.x > 4.5) {
           _this.game.score++;
           _this.obstacleList[i].isPassed = true;
-          document.getElementById("score").innerHTML = "SCORE: " + _this.game.score;
+          document.getElementById("score").innerHTML = _this.game.score;
 
         }
       }
@@ -98,8 +98,9 @@ ObstacleManager.prototype.reset = function () {
  */
 ObstacleManager.prototype.createObstacle = function () {
 
-  let obstacle = new Obstacle(this.game, this.choice, this.count);
-  this.choice = (this.choice + 1) % 8;
+  this.choice = Math.floor(Math.random() * 11);
+  var obstacle = new Obstacle(this.game, this.choice, this.count);
+
   this.obstacleList.push(obstacle);
   this.count++;
 };

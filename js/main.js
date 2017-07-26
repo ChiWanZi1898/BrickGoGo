@@ -18,6 +18,8 @@ window.addEventListener('DOMContentLoaded', function () {
     light2.intensity = 1;
     var light3 = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(-1, -0.4, -1), scene);
     light3.intensity = 0.5;
+    var light4 = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(1, 0, 0), scene);
+    light4.intensity = 0.3;
 
     new Game(scene, engine);
     

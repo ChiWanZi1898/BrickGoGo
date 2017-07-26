@@ -33,12 +33,12 @@ Obstacle = function (game, type, id) {
   this.trackWidth = 1;
   this.trackLength = 8;
 
-  this.wallHeight = 1.5;
+  this.wallHeight = 1.6;
   this.wallHeightHigh = 4;
   this.wallWidth = 1;
   this.wallLength = 0.25;
 
-  this.triggerHeight = 0.5;
+  this.triggerHeight = 0.8;
   this.triggerWidth = 0.25;
   this.triggerLength = 0.25;
 
@@ -68,73 +68,93 @@ Obstacle = function (game, type, id) {
     case 0:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.meshList.push(this.createBasicWall(true, true, -3));
+      this.meshList.push(this.createBasicWall(2, true, -3));
       this.addAnimationNormal(this.meshList[1]);
       break;
     case 1:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.meshList.push(this.createBasicWall(true, false, -3));
+      this.meshList.push(this.createBasicWall(2, false, -3));
       this.addAnimationNormal(this.meshList[1]);
       break;
     case 2:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.meshList.push(this.createBasicWall(true, true, -3));
+      this.meshList.push(this.createBasicWall(0, true, -3));
       this.addAnimationNormal(this.meshList[1]);
-      this.meshList.push(this.createBasicWall(false, true, -3));
+      this.meshList.push(this.createBasicWall(1, true, -3));
       this.addAnimationNormal(this.meshList[2]);
       break;
     case 3:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.wallAbove = true;
+      this.wallAboveOrBeneath = 2;
       this.wallLow = true;
       this.wallPosition = -3;
-      this.meshList.push(this.createBasicWall(true, true, -3));
+      this.meshList.push(this.createBasicWall(this.wallAboveOrBeneath, this.wallLow, this.wallPosition));
       this.addAnimationNormal(this.meshList[1]);
-      this.meshList.push(this.createBasicTrigger());
+      this.meshList.push(this.createBasicTrigger(2));
       this.addAnimationNormal(this.meshList[2]);
       break;
     case 4:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.meshList.push(this.createBasicWall(true, true, -3));
+      this.meshList.push(this.createBasicWall(0, true, -3));
       this.addAnimationUpAndDown(this.meshList[1]);
       break;
     case 5:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.wallAbove = true;
+      this.wallAboveOrBeneath = 2;
       this.wallLow = false;
       this.wallPosition = -3;
-      this.meshList.push(this.createBasicWall(true, false, -3));
+      this.meshList.push(this.createBasicWall(this.wallAboveOrBeneath, this.wallLow, this.wallPosition));
       this.addAnimationNormal(this.meshList[1]);
-      this.meshList.push(this.createBasicTrigger());
+      this.meshList.push(this.createBasicTrigger(2));
       this.addAnimationNormal(this.meshList[2]);
       break;
     case 6:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.meshList.push(this.createBasicWall(true, false, 2));
+      this.meshList.push(this.createBasicWall(0, false, 2));
       this.addAnimationNormal(this.meshList[1]);
-      this.meshList.push(this.createBasicWall(false, false, -2));
+      this.meshList.push(this.createBasicWall(1, false, -2));
       this.addAnimationNormal(this.meshList[2]);
       break;
     case 7:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.meshList.push(this.createBasicWall(true, false, -3));
+      this.meshList.push(this.createBasicWall(2, false, -3));
       this.addAnimationNormal(this.meshList[1]);
-      this.meshList.push(this.createSwapTrigger());
+      this.meshList.push(this.createSwapTrigger(2));
       this.addAnimationNormal(this.meshList[2]);
-      this.meshList.push(this.createBasicWall(false, true, 1));
+      this.meshList.push(this.createBasicWall(1, true, 1));
       this.addAnimationNormal(this.meshList[3]);
+      break;
+    case 8:
+      this.meshList.push(this.createBasicTrack());
+      this.addAnimation(this.meshList[0]);
+      this.meshList.push(this.createBasicWall(2, true, -3));
+      this.addAnimationHide(this.meshList[1]);
+      break;
+    case 9:
+      this.meshList.push(this.createBasicTrack());
+      this.addAnimation(this.meshList[0]);
+      this.meshList.push(this.createBasicWall(0, true, -1));
+      this.addAnimationNormal(this.meshList[1]);
+      this.meshList.push(this.createBasicWall(0, true, 1));
+      this.addAnimationNormal(this.meshList[2]);
+      break;
+    case 10:
+      this.meshList.push(this.createBasicTrack());
+      this.addAnimation(this.meshList[0]);
+      this.meshList.push(this.createBasicWall(0, true, -3));
+      this.addAnimationJumpForth(this.meshList[1]);
       break;
     default:
       this.meshList.push(this.createBasicTrack());
       this.addAnimation(this.meshList[0]);
-      this.meshList.push(this.createBasicWall(true, true, -3));
+      this.meshList.push(this.createBasicWall(0, true, -3));
       this.addAnimationNormal(this.meshList[1]);
       break;
   }
@@ -166,19 +186,32 @@ Obstacle.prototype.createBasicTrack = function () {
 
 /**
  * create wall.
- * @param isAbove  whether it is above the track or not.
+ * @param aboveOrBeneath  decide whether the wall is above the track(0), beneath the track(1), or random(2).
  * @param isLow  whether it is a low wall or not(then it is a high wall that the brick cannot jump over).
  * @param position
  */
-Obstacle.prototype.createBasicWall = function (isAbove = true, isLow = true, position = 0) {
+Obstacle.prototype.createBasicWall = function (aboveOrBeneath = 0, isLow = true, position = 0) {
 
   var height = (isLow === true? this.wallHeight : this.wallHeightHigh);
   var mesh = BABYLON.Mesh.CreateBox("wall_" + this.id, 1.0, this.scene);
   mesh.scaling = new BABYLON.Vector3(this.wallLength, height, this.wallWidth);
-  if(isAbove === true)
-    mesh.position.y = height / 2 + this.trackHeight / 2;
-  else
-    mesh.position.y = - height / 2 - this.trackHeight / 2;
+
+  switch (aboveOrBeneath) {
+    case 0:
+      mesh.position.y = height / 2 + this.trackHeight / 2;
+      break;
+    case 1:
+      mesh.position.y = - height / 2 - this.trackHeight / 2;
+      break;
+    case 2:
+      if (Math.random() > 0.5) {
+        mesh.position.y = height / 2 + this.trackHeight / 2;
+      }
+      else {
+        mesh.position.y = - height / 2 - this.trackHeight / 2;
+      }
+      break;
+  }
 
   mesh.position.x = this.positionX + position;
 
@@ -204,13 +237,29 @@ Obstacle.prototype.createBasicWall = function (isAbove = true, isLow = true, pos
 /**
  * create a trigger, which the brick touch will trigger some walls flip.
  */
-Obstacle.prototype.createBasicTrigger = function () {
+Obstacle.prototype.createBasicTrigger = function (aboveOrBeneath) {
 
   var mesh = BABYLON.Mesh.CreateBox("trigger_" + this.id, 1.0, this.scene);
   mesh.scaling = new BABYLON.Vector3(this.triggerLength, this.triggerHeight, this.triggerWidth);
-  mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
-  mesh.position.x = this.positionX + 3;
 
+  switch (aboveOrBeneath) {
+    case 0:
+      mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
+      break;
+    case 1:
+      mesh.position.y = -(this.triggerHeight / 2 + this.trackHeight / 2);
+      break;
+    case 2:
+      if (Math.random() > 0.5) {
+        mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
+      }
+      else {
+        mesh.position.y = -(this.triggerHeight / 2 + this.trackHeight / 2);
+      }
+      break;
+  }
+
+  mesh.position.x = this.positionX + 3;
 
   var materialBox = new BABYLON.StandardMaterial("trigger_texture_" + this.id, this.scene);
   materialBox.diffuseColor = new BABYLON.Color3(93 / 256, 175 / 236, 70 / 256);
@@ -222,7 +271,7 @@ Obstacle.prototype.createBasicTrigger = function () {
     {trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: mesh},
     function () {
       _this.meshList[1].dispose();
-      _this.meshList[1] = _this.createBasicWall((_this.wallAbove + 1) % 2, _this.wallLow, _this.wallPosition);
+      _this.meshList[1] = _this.createBasicWall((_this.wallAboveOrBeneath + 1) % 2, _this.wallLow, _this.wallPosition);
       _this.addAnimationNormal(_this.meshList[1], _this.wallAnimation.currentFrame);
     }));
 
@@ -232,11 +281,28 @@ Obstacle.prototype.createBasicTrigger = function () {
 
 /**
  * create a trigger, which the brick touch will trigger the swap movement of the brick.
+ * @param aboveOrBeneath decide whether the wall is above the track(0), beneath the track(1), or random(2).
  */
-Obstacle.prototype.createSwapTrigger = function () {
+Obstacle.prototype.createSwapTrigger = function (aboveOrBeneath) {
 
   var mesh = BABYLON.Mesh.CreateBox("trigger_" + this.id, 1.0, this.scene);
   mesh.scaling = new BABYLON.Vector3(this.triggerLength, this.triggerHeight, this.triggerWidth);
+  switch (aboveOrBeneath) {
+    case 0:
+      mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
+      break;
+    case 1:
+      mesh.position.y = -(this.triggerHeight / 2 + this.trackHeight / 2);
+      break;
+    case 2:
+      if (Math.random() > 0.5) {
+        mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
+      }
+      else {
+        mesh.position.y = -(this.triggerHeight / 2 + this.trackHeight / 2);
+      }
+      break;
+  }
   mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
   mesh.position.x = this.positionX + 3;
 
@@ -377,6 +443,111 @@ Obstacle.prototype.addAnimationNormal = function (mesh, start = 0) {
   keysPX.push({frame: 30, value: mesh.position.x + 2});
   keysPX.push({frame: 570, value: mesh.position.x + 5 * this.trackLength - 2});
   keysPX.push({frame: 600, value: mesh.position.x + 5 * this.trackLength});
+  animationPX.setKeys(keysPX);
+
+
+  let animationPY = new BABYLON.Animation("animationPY",
+    "position.y",
+    30,
+    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+  var keysPY = [];
+  keysPY.push({frame: 0, value: mesh.position.y});
+  keysPY.push({frame: 30, value: mesh.position.y + 4});
+  keysPY.push({frame: 570, value: mesh.position.y + 4});
+  keysPY.push({frame: 600, value: mesh.position.y});
+  animationPY.setKeys(keysPY);
+
+  let animationA = new BABYLON.Animation("animationA",
+    "material.alpha",
+    30,
+    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+  var keysA = [];
+  keysA.push({frame: 0, value: 0});
+  keysA.push({frame: 30, value: 1});
+  keysA.push({frame: 570, value: 1});
+  keysA.push({frame: 600, value: 0});
+  animationA.setKeys(keysA);
+
+  var _this = this;
+  let anima = this.scene.beginDirectAnimation(mesh, [animationPX, animationPY, animationA], start, 600, false, 4)
+
+  this.animationList.push(anima);
+
+};
+
+
+/**
+ * add hide animation, the wall will not show up, unless it is close.
+ * @param mesh
+ * @param start
+ */
+Obstacle.prototype.addAnimationHide = function (mesh, start = 0) {
+
+  let animationPX = new BABYLON.Animation("animationPX",
+    "position.x",
+    30,
+    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+  var keysPX = [];
+  keysPX.push({frame: 0, value: mesh.position.x});
+  keysPX.push({frame: 30, value: mesh.position.x + 2});
+  keysPX.push({frame: 570, value: mesh.position.x + 5 * this.trackLength - 2});
+  keysPX.push({frame: 600, value: mesh.position.x + 5 * this.trackLength});
+  animationPX.setKeys(keysPX);
+
+
+  let animationPY = new BABYLON.Animation("animationPY",
+    "position.y",
+    30,
+    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+  var keysPY = [];
+  keysPY.push({frame: 0, value: mesh.position.y});
+  keysPY.push({frame: 30, value: mesh.position.y + 4});
+  keysPY.push({frame: 570, value: mesh.position.y + 4});
+  keysPY.push({frame: 600, value: mesh.position.y});
+  animationPY.setKeys(keysPY);
+
+  let animationA = new BABYLON.Animation("animationA",
+    "material.alpha",
+    30,
+    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+  var keysA = [];
+  keysA.push({frame: 0, value: 0});
+  keysA.push({frame: 240, value: 0});
+  keysA.push({frame: 270, value: 1});
+  keysA.push({frame: 570, value: 1});
+  keysA.push({frame: 600, value: 0});
+  animationA.setKeys(keysA);
+
+  var _this = this;
+  let anima = this.scene.beginDirectAnimation(mesh, [animationPX, animationPY, animationA], start, 600, false, 4)
+
+  this.animationList.push(anima);
+
+};
+
+
+/**
+ *
+ * @param mesh
+ * @param start
+ */
+Obstacle.prototype.addAnimationJumpForth = function (mesh, start = 0) {
+
+  let animationPX = new BABYLON.Animation("animationPX",
+    "position.x",
+    30,
+    BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+    BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+  var keysPX = [];
+  keysPX.push({frame: 0, value: mesh.position.x});
+  keysPX.push({frame: 240, value: mesh.position.x + 2 * this.trackLength});
+  keysPX.push({frame: 270, value: mesh.position.x + 3 * this.trackLength});
+  keysPX.push({frame: 600, value: mesh.position.x + 5.75 * this.trackLength});
   animationPX.setKeys(keysPX);
 
 
