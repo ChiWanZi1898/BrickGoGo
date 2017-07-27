@@ -52,6 +52,12 @@ Game = function (scene, engine) {
   this.score = 0;
 
   /**
+   * keep the best score
+   * @type {number}
+   */
+  this.bestScore = 0;
+
+  /**
    * the remain lives of the player.
    * @type {number}
    */
@@ -99,7 +105,7 @@ Game = function (scene, engine) {
      * rotate the camera
      */
     else if (_this.state === 0) {
-      _this.scene.activeCamera.alpha += 0.001;
+      _this.scene.activeCamera.alpha += 0.002;
       if (_this.scene.activeCamera.alpha >= Math.PI * 2) {
         _this.scene.activeCamera.alpha -= Math.PI * 2;
       }
@@ -244,6 +250,8 @@ Game.prototype.createStartScene = function () {
 
   this.sound.start_music.play();
   this.sound.start_music.setVolume(1);
+
+  document.getElementById("tutorial").innerHTML = "Press SPACE or TOUCH to Start";
 };
 
 
@@ -264,6 +272,8 @@ Game.prototype.createGameScene = function () {
   $("img").css("visibility", "visible");
 
   this.sound.game_music.play(2.1);
+
+  document.getElementById("tutorial").innerHTML = "Press SPACE to Jump, Press S to Swap</br>Or Swipe to Move";
 };
 
 
@@ -274,11 +284,28 @@ Game.prototype.createGameOverScene = function () {
   this.cloud.pause();
   this.cloud_2.pause();
   this.obstacleManager.pauseAll();
+  if(document.cookie.length > 0)
+  {
+    var n = document.cookie.indexOf("=");
+    this.bestScore = decodeURI(document.cookie.substring(n + 1));
+  }
+  if(this.score > this.bestScore) {
+    this.bestScore = this.score;
+    document.cookie = "best=" + encodeURI(this.bestScore);
+  }
+  console.info(document.cookie)
+  document.getElementById("gameover").innerHTML = "Valar Morghulis</br>"
+                                                  + "Score: " + this.score
+                                                  + " Best: " + this.bestScore;
   document.getElementById("gameover").style.visibility = "visible";
 
   $("img").css("visibility", "hidden");
 
+  document.getElementById("score").innerHTML = "";
+
   this.sound.game_music.stop();
+
+  document.getElementById("tutorial").innerHTML = "Press SPACE or TOUCH to Go Back";
 };
 
 
@@ -305,9 +332,6 @@ Game.prototype.removeGameScene = function () {
   this.cloud_2.remove();
   this.brick.remove();
   document.getElementById("gameover").style.visibility = "hidden";
-  document.getElementById("score").innerHTML = "";
-
-
 };
 
 

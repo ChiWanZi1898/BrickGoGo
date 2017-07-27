@@ -98,8 +98,8 @@ ObstacleManager.prototype.reset = function () {
  */
 ObstacleManager.prototype.createObstacle = function () {
 
-  this.choice = Math.floor(Math.random() * 11);
-  var obstacle = new Obstacle(this.game, 11, this.count);
+  this.choice = Math.floor(Math.random() * 12);
+  var obstacle = new Obstacle(this.game, this.choice, this.count);
 
   this.obstacleList.push(obstacle);
   this.count++;
