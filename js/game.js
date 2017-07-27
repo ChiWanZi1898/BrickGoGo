@@ -389,8 +389,7 @@ Game.prototype.loadResources = function () {
 
 
 Game.prototype.increaseLives = function () {
-  for(var i = 0; i < 4; i++)
-    console.info($("img:eq("+ i +")").attr("src"))
+
   if(this.lives < 3) {
     this.lives++;
     $("#image" + this.lives).attr("src", "pictures/heart.png");
