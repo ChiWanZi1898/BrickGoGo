@@ -266,7 +266,7 @@ Obstacle.prototype.createBasicTrigger = function (aboveOrBeneath) {
       mesh.position.y = -(this.triggerHeight / 2 + this.trackHeight / 2);
       break;
     case 2:
-      if (Math.random() > 0.5) {
+      if (Math.random() > 0) {
         mesh.position.y = this.triggerHeight / 2 + this.trackHeight / 2;
       }
       else {

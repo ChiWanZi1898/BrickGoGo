@@ -347,7 +347,7 @@ Game.prototype.gameStartAnimation = function(){
     BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT);
   var keys = [];
   keys.push({frame: 0, value: 4});
-  keys.push({frame: 120, value: 50});
+  keys.push({frame: 120, value: 30});
   animation.setKeys(keys);
 
   var animationAlpha = new BABYLON.Animation("animation",
