@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="css/game.css"/>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
     <title>BrickGoGo</title>
     <script src="src/jquery-3.2.1.min.js"></script>
@@ -12,14 +13,14 @@
     <script src="js/obstacle_manager.js"></script>
     <script src="js/cloud.js"></script>
     <script src="js/sound.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/game.css"/>
 </head>
 <body>
 <ul id="lives">
-    <li><img src="pictures/heart.png" ></li>
-    <li><img src="pictures/heart.png" ></li>
-    <li><img src="pictures/heart.png" ></li>
+    <li><img id="image1" src="pictures/heart.png" ></li>
+    <li><img id="image2" src="pictures/heart.png" ></li>
+    <li><img id="image3" src="pictures/heart.png" ></li>
 </ul>
+<canvas id="renderCanvas"></canvas>
 <div id="text">
     <div>
         <p id="score"></p>
@@ -28,7 +29,6 @@
     <p id="gameover">Valar Morghulis</p>
     <p id="tutorial"></p>
 </div>
-<canvas id="renderCanvas"></canvas>
 </body>
 </html>
 

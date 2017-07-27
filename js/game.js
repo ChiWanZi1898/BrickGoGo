@@ -389,13 +389,16 @@ Game.prototype.loadResources = function () {
 
 
 Game.prototype.increaseLives = function () {
-  if(this.lives < 3)
+  for(var i = 0; i < 4; i++)
+    console.info($("img:eq("+ i +")").attr("src"))
+  if(this.lives < 3) {
     this.lives++;
-  $("img:eq("+ this.lives +")").attr("src", "pictures/heart.png");
+    $("#image" + this.lives).attr("src", "pictures/heart.png");
+  }
 };
 
 
 Game.prototype.decreaseLives = function () {
-  $("img:eq("+ this.lives +")").attr("src", "pictures/heart_grey.png");
+  $("#image" + this.lives).attr("src", "pictures/heart_grey.png");
   this.lives--;
 };

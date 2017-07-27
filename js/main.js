@@ -2,13 +2,14 @@
  * Created by aglax2357 on 2017/7/25.
  */
 
+
 window.addEventListener('DOMContentLoaded', function () {
   var canvas = document.querySelector("#renderCanvas");
   var engine = new BABYLON.Engine(canvas, true);
-  
+
   var createScene = function () {
     var scene = new BABYLON.Scene(engine);
-    
+
     var camera = new BABYLON.ArcRotateCamera("ArcRotateCamera", 1, 0.9, 4, new BABYLON.Vector3(0, 4.5, 0), scene);
     camera.attachControl(canvas, false);
 
@@ -22,18 +23,19 @@ window.addEventListener('DOMContentLoaded', function () {
     light4.intensity = 0.3;
 
     new Game(scene, engine);
-    
+
     return scene;
   };
 
   var scene = createScene();
-  
+
   engine.runRenderLoop(function () {
     scene.render();
   });
-  
+
   window.addEventListener("resize", function () {
     engine.resize();
   });
-  
+
 });
+
