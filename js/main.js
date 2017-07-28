@@ -39,3 +39,6 @@ window.addEventListener('DOMContentLoaded', function () {
 
 });
 
+document.addEventListener('touchmove', function (event) {
+  event.preventDefault();
+}, false);
