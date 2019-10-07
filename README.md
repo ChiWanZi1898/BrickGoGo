@@ -3,4 +3,4 @@ A game for a lonely brick.
 
 ## Snapshot
 
-![](//imgur.com/a/RHIyNDK)
+![](https://imgur.com/download/JwUJv6e/)
